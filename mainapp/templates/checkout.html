@@ -1,0 +1,182 @@
+{% extends 'partials/base.html' %}
+
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+    <div class="row my-4">
+
+        <div class="col-lg-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <a href="{% url 'cart' %}">
+                            Корзина
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                            Оформление заказа
+                    </li>
+                </ol>
+            </nav>
+
+            <div class="order-md-1">
+                <h3 class="my-5">
+                    Оформление заказа
+                </h3>
+                <form id="order" action="{% url 'create_order' %}" method="post" class="needs-validation">
+                    {% csrf_token %}
+
+                    <div class="city-block mb-5 form-row">
+                        <div class="col-md-8">
+                            <h5>
+                                Город получения
+                            </h5>
+                            {{ form.city }}
+                        </div>
+                    </div>
+
+                    <div class="receive-method-block mb-5 form-row">
+                        <div class="col-md-8">
+                            <h5>
+                                Способ получения
+                            </h5>
+                            {{ form.receive_method }}
+                        </div>
+                    </div>
+
+                    <div class="adress-block mb-5">
+                        <div class="form-row">
+                            <div class="col-md-12 mb-3">
+                                <h5 class="mb-2">
+                                    Адрес получателя
+                                </h5>
+                            </div>
+                        </div>
+
+                        {{ form.address|as_crispy_field }}
+
+                        <div class="form-row">
+                            <div class="form-group col-md-3 mb-0">
+                                {{ form.apartment_number|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-3 mb-0">
+                                {{ form.porch_number|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-3 mb-0">
+                                {{ form.floor_number|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-3 mb-0">
+                                {{ form.intercom|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-8 mb-0">
+                                {{ form.full_passport_name|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-5 mb-0">
+                                {{ form.email|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-3 mb-0">
+                                {{ form.phone|as_crispy_field }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="delivery-block mb-5">
+                        <h5 class="d-block">
+                            Дата и время доставки
+                        </h5>
+                        <div class="form-row">
+                            <div class="form-group col-md-3 mb-0">
+                                {{ form.delivery_date|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-3 mb-0">
+                                {{ form.delivery_time|as_crispy_field }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-block mb-5">
+                        <h5 class="d-block">
+                            Способ оплаты
+                        </h5>
+                        {{ form.payment_method }}
+                    </div>
+
+                    <hr class="my-4">
+
+                    <button form="order" class="btn btn-primary" type="submit">
+                        Перейти к оплате
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="cart-products-col">
+                <div class="col-8 mt-4 mb-3">
+                    <div class="row cart-result">
+                        <h3>Ваш заказ</h3>
+                        <span class="change-cart-link">
+                            <a href="{% url 'cart' %}" >
+                                Изменить
+                            </a>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-8 mb-4">
+                    <div class="row cart-result">
+                        <span>Товары ({{ cart.total_products }})</span>
+                        <span>{{ cart.total_price }} ₽</span>
+                    </div>
+                    <div class="row cart-result">
+                        <span>Доставка</span>
+                        <span>бесплатно</span>
+                    </div>
+                    <div class="row cart-result font-weight-bold">
+                        Итого: <span>{{ total_order_price }} ₽</span>
+                    </div>
+                </div>
+
+                <button form="order" class="btn btn-primary btn-block mb-5" type="submit">
+                    Перейти к оплате
+                </button>
+                {% for product in cart.products.all %}
+
+                    <div class="mb-3">
+                        <div class="card product-card">
+                            <a href="{{ product.content_object.get_absolute_url }}" class="product-card__img-wrapper">
+                                <img class="product-card__img card-img-top" src="{{ product.content_object.image1.url }}" alt="">
+                            </a>
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a href="{{ product.content_object.get_absolute_url }}">
+                                        {{ product.content_object.title }}
+                                    </a>
+                                </h5>
+                                <h5>
+                                    {{ product.content_object.price }} ₽
+                                    <span class="quantity">
+                                        {{ product.quantity }} шт.
+                                    </span>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+        <!-- /.col-lg-3 -->
+
+    </div>
+    <!-- /.row -->
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends 'partials/base.html' %}
+
+
+{% block content %}
+
+
+    <div class="cart mb-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span class="alert-text">
+                        {{ message }}
+                    </span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% if not cart.products.count %}
+            <h3>
+                Ваша корзина пуста
+            </h3>
+        {% else %}
+            <div class="row">
+                <div class="col-lg-8 mt-4">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item active" aria-current="page">
+        {#                        <a href="{% url 'cart' %}">#}
+                                    Корзина
+        {#                        </a>#}
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'checkout' %}">
+                                    Оформление заказа
+                                </a>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">№</th>
+                        <th scope="col">Наименование</th>
+                        <th scope="col">Изображение</th>
+                        <th scope="col">Цена</th>
+                        <th scope="col">Количество</th>
+                        <th scope="col">Общая стоимость</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in cart.products.all %}
+                        <tr>
+                            <th scope="row">
+                                {{ product.id }}
+                            </th>
+                            <td>
+                                {{ product.content_object.title }}
+                            </td>
+                            <td>
+                                <a href="{{ product.content_object.get_absolute_url }}">
+                                    <img src="{{ product.content_object.image1.url }}" alt="" class="cart-img">
+                                </a>
+                            </td>
+                            <td>
+                                {{ product.content_object.price }} ₽
+                            </td>
+                            <td>
+                                <form action="{% url 'change_quantity' ct_model=product.content_object.get_model_name slug=product.content_object.slug %}"
+                                      method="post">
+                                    {% csrf_token %}
+                                    <input type="number" name="quantity" value="{{ product.quantity }}" min="1" class="form-control quantity-input">
+                                    <br>
+                                    <input type="submit" value="Изменить" class="btn btn-primary">
+                                </form>
+                            </td>
+                            <td>
+                                {{ product.total_price }} ₽
+                                <div class="remove-icon">
+                                    <a href="{% url 'delete_from_cart' ct_model=product.content_object.get_model_name slug=product.content_object.slug %}">
+                                        <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-trash" fill="red" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>Итого:</td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            {{ cart.total_products }}
+                        </td>
+                        <td>
+                            {{ cart.total_price }} ₽
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <a href="{% url 'checkout' %}">
+                <button class="btn btn-primary">
+                    Перейти к оформлению
+                </button>
+            </a>
+        {% endif %}
+    </div>
+
+{% endblock %}
