@@ -191,7 +191,7 @@ class Customer(models.Model):
     addresses = models.ForeignKey(Address, verbose_name='Адреса', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return "Покупатель {}".format(self.user)
+        return self.user.__str__()
 
 
 class Cart(models.Model):
@@ -315,7 +315,7 @@ class Order(models.Model):
     creation_datetime = models.DateTimeField(auto_now=True, verbose_name='Дата и время создания заказа')
 
     def __str__(self):
-        return str(self.id)
+        return str('Заказ №{} от {}'.format(self.id, self.customer.__str__()))
 
     def get_payment_method_display(self):
         return Order.PAYMENT_METHOD_CARD_ONLINE
