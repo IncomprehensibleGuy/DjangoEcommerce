@@ -15,7 +15,7 @@
             <p class="card-text">
                 {{ product.description }}
             </p>
-            <a href="{% url 'add_to_cart' ct_model=product.get_model_name slug=product.slug %}" class="add-to-cart-btn">
+            <a href="{% url 'add_to_cart' slug=product.slug %}" class="add-to-cart-btn">
                 <button class="btn btn-danger w-100">
                     Добавить в корзину
                 </button>

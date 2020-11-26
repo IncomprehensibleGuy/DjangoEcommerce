@@ -3,173 +3,28 @@ import datetime
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
 from django.urls import reverse
 from django.utils import timezone
 
+
 #-------------------------------
-# 1  Category +
-# 2  Product +
-# 3  Smartphone extends Product +
-# 4  Notebook extends Product +
-# 5  CartProduct +
-# 6  Cart +
-# 7  Customer +
-# 8  Order +
+# Address
+# Customer +
+# Category +
+# Product +
+# Smartphone extends Product + / delete at refactoring
+# Notebook extends Product + / delete at refactoring
+# CartProduct +
+# Cart +
+# Order +
 #-------------------------------
 
 
 User = get_user_model()
 
 
-def get_product_url(obj, viewname):
-    ct_model = obj.__class__._meta.model_name
-    return reverse(viewname, kwargs={'ct_model': ct_model, 'slug': obj.slug})
-
-
-def get_models_for_count(*model_names):
-    return [models.Count(model_name) for model_name in model_names]
-
-
-class LatestProductsManager:
-
-    @staticmethod
-    def get_products_for_main_page(*args, **kwargs):
-        with_respect_to = kwargs.get('with_respect_to')
-        products = []
-        ct_models = ContentType.objects.filter(model__in=args)
-        for ct_model in ct_models:
-            model_products = ct_model.model_class()._base_manager.all().order_by("-id")[:5]
-            products.extend(model_products)
-        if with_respect_to:
-            ct_model = ContentType.objects.filter(model=with_respect_to)
-            if ct_model.exists():
-                if with_respect_to in args:
-                    return sorted(
-                        products, key=lambda x: x.__class__._meta.model_name.startswith(with_respect_to), reverse=True
-                    )
-        return products
-
-
-class LatestProducts:
-
-    objects = LatestProductsManager
-
-
-class CategoryManager(models.Manager):
-
-    CATEGORY_TITLE_COUNT_NAME = {
-        'Ноутбуки': 'notebook__count',
-        'Смартфоны': 'smartphone__count',
-    }
-
-    def get_queryset(self):
-        return super().get_queryset()
-
-    def get_sidebar_categories(self):
-        models = get_models_for_count('notebook','smartphone')
-        queryset = self.get_queryset().annotate(*models)
-        data = [
-            dict(
-                title=category.title,
-                url=category.get_absolute_url(),
-                count=getattr(category, self.CATEGORY_TITLE_COUNT_NAME[category.title])
-            ) for category in queryset
-        ]
-        return data
-
-
-class Category(models.Model):
-
-    title = models.CharField(max_length=255, verbose_name="Категория")
-    slug = models.SlugField(unique=True)
-    objects = CategoryManager()
-
-    def __str__(self):
-        return self.title
-
-    def get_absolute_url(self):
-        return reverse('category', kwargs={'slug': self.slug})
-
-    class Meta:
-        verbose_name = "Категория"
-        verbose_name_plural = "Категории"
-
-
-class Product(models.Model):
-
-    MIN_RESOLUTION = (400, 400)
-    MAX_RESOLUTION = (2000, 2000)
-
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="Категория")
-    title = models.CharField(max_length=255, verbose_name="Название")
-    image1 = models.ImageField(verbose_name="Фото 1", blank=True)
-    image2 = models.ImageField(verbose_name="Фото 2", blank=True)
-    image3 = models.ImageField(verbose_name="Фото 3", blank=True)
-    image4 = models.ImageField(verbose_name="Фото 4", blank=True)
-    description = models.TextField(verbose_name="Описание", blank=True)
-    price = models.DecimalField(max_digits=7, decimal_places=0, verbose_name="Цена")
-    slug = models.SlugField(unique=True)
-
-    def __str__(self):
-        return self.title
-
-    def get_model_name(self):
-        return self.__class__.__name__.lower()
-
-    class Meta:
-        abstract = True
-
-
-
-class Smartphone(Product):
-
-    class Meta:
-        verbose_name = "Смартфон"
-        verbose_name_plural = "Смартфоны"
-
-    diagonal = models.CharField(max_length=255, verbose_name="Диагональ")
-    display_type = models.CharField(max_length=255, verbose_name="Матрица")
-    resolution = models.CharField(max_length=255, verbose_name="Разрешение экрана")
-    accumulator_volume = models.CharField(max_length=255, verbose_name="Ёмкость аккумулятора")
-    sd_volume_max = models.CharField(max_length=255, verbose_name="Объём встроенной памяти")
-    ram = models.CharField(max_length=255,
-                           choices=[ (str(x)+' ГБ', str(x)+' ГБ') for x in [2, 3, 4, 6, 8, 16, 32]],
-                           verbose_name="Объём оперативной памяти")
-    sd = models.BooleanField(default=True, verbose_name="SD карта")
-    main_camera_mp = models.CharField(max_length=255, verbose_name="Основная камера")
-    frontal_camera_mp = models.CharField(max_length=255, verbose_name="Фронтальная камера")
-
-    def __str__(self):
-        return "{}: {}".format(self.category.title, self.title)
-
-    def get_absolute_url(self):
-        return get_product_url(self, 'product')
-
-
-class Notebook(Product):
-
-    class Meta:
-        verbose_name = "Ноутбук"
-        verbose_name_plural = "Ноутбуки"
-
-    diagonal = models.FloatField(verbose_name="Диагональ")
-    display_type = models.CharField(max_length=255, verbose_name="Матрица")
-    processor = models.CharField(max_length=255, verbose_name="Процессор")
-    processor_frequency = models.CharField(max_length=255, verbose_name="Частота процессора")
-    total_memory = models.CharField(max_length=255, verbose_name="Общий объём памяти")
-    ram = models.CharField(max_length=255, verbose_name="Оперативная память")
-    video = models.CharField(max_length=255, verbose_name="Видеокарта")
-    time_without_charge = models.CharField(max_length=255, verbose_name="Время работы аккумулятора")
-
-    def __str__(self):
-        return "{}: {}".format(self.category.title, self.title)
-
-    def get_absolute_url(self):
-        return get_product_url(self, 'product')
-
-
 class Address(models.Model):
+
     title = models.CharField(max_length=64, verbose_name='Название', null=True, blank=True)
     address = models.CharField(max_length=256, verbose_name='Адрес', null=True, blank=True)
     apartment_number = models.PositiveIntegerField(verbose_name='Квартира', null=True, blank=True)
@@ -192,6 +47,48 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.user.__str__()
+
+
+class Category(models.Model):
+
+    class Meta:
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
+
+    title = models.CharField(max_length=64, verbose_name="Категория")
+    slug = models.SlugField(unique=True)
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('category', kwargs={'slug': self.slug})
+
+
+class Product(models.Model):
+
+    class Meta:
+        verbose_name = "Продукт"
+        verbose_name_plural = "Продукты"
+
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="Категория")
+    title = models.CharField(max_length=255, verbose_name="Название")
+    image1 = models.ImageField(verbose_name="Фото 1", blank=True)
+    image2 = models.ImageField(verbose_name="Фото 2", blank=True)
+    image3 = models.ImageField(verbose_name="Фото 3", blank=True)
+    image4 = models.ImageField(verbose_name="Фото 4", blank=True)
+    description = models.TextField(verbose_name="Описание", blank=True)
+    price = models.DecimalField(max_digits=7, decimal_places=0, verbose_name="Цена")
+    slug = models.SlugField(unique=True)
+
+    def __str__(self):
+        return self.title
+
+    def get_model_name(self):
+        return self.__class__.__name__.lower()
+
+    def get_absolute_url(self):
+        return reverse('product', kwargs={'slug': self.slug})
 
 
 class Cart(models.Model):
@@ -219,17 +116,15 @@ class CartProduct(models.Model):
 
     user = models.ForeignKey(Customer, verbose_name="Клиент", on_delete=models.CASCADE)
     cart = models.ForeignKey(Cart, verbose_name="Корзина", on_delete=models.CASCADE, related_name="related_cart")
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey("content_type", "object_id")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     total_price = models.DecimalField(max_digits=7, decimal_places=0, default=0, verbose_name="Общая стоимость")
 
     def __str__(self):
-        return "Товар: {}".format(self.content_object.title)
+        return "Товар: {}".format(self.product.title)
 
     def save(self, *args, **kwargs):
-        self.total_price = self.content_object.price * self.quantity
+        self.total_price = self.product.price * self.quantity
         super().save(*args, **kwargs)
 
 
