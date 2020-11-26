@@ -10,7 +10,7 @@ Project setup (Windows):
 5) activate
 6) cd ../..
 
-Project setup (Linux/MaxOS):
+Project setup (Linux / MaxOS):
 1) git clone https://github.com/IncomprehensibleGuy/DjangoEcommerce.git
 2) ls DjangoEcommerce
 3) python -m venv venv
