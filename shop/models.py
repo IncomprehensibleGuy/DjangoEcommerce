@@ -23,11 +23,15 @@ class ProductPhoto(models.Model):
 
     product = models.ForeignKey('Product', on_delete=models.CASCADE, verbose_name='Продукт')
     image = models.ImageField(verbose_name='Фото')
+    title = models.CharField(max_length=64, verbose_name='Название')
 
     class Meta:
         ordering = ('product',)
         verbose_name = 'Фото'
-        verbose_name_plural = 'Фотографии продукта'
+        verbose_name_plural = 'Фотографии'
+
+    def __str__(self):
+        return self.title
 
 
 class Product(models.Model):

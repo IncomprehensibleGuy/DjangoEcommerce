@@ -11,30 +11,6 @@ class Cart:
             cart = self.session[CART_SESSION_ID] = {}
         self.cart = cart
 
-    def save(self):
-        ''' Updating session cart '''
-        self.session[CART_SESSION_ID] = self.cart
-        self.session.modified = True
-
-    def add_product(self, product, quantity=1):
-        product_id = str(product.id)
-        if product_id not in self.cart:
-            self.cart[product_id] = {
-                'quantity': 0,
-                'price': str(product.price)
-            }
-        self.cart[product_id]['quantity'] = quantity
-        self.save()
-
-    def change_product_quantity(self):
-        pass
-
-    def delete_product(self, product):
-        product_id = str(product.id)
-        if product_id in self.cart:
-            del self.cart[product_id]
-            self.save()
-
     def __iter__(self):
         ''' Перебор элементов в корзине и получение продуктов из базы данных. '''
         product_ids = self.cart.keys()
@@ -56,7 +32,45 @@ class Cart:
         ''' Подсчет стоимости товаров в корзине. '''
         return sum(int(item['price']) * item['quantity'] for item in self.cart.values())
 
+    def save(self):
+        ''' Updating session cart '''
+        self.session[CART_SESSION_ID] = self.cart
+        self.session.modified = True
+
     def clear(self):
         ''' Delete cart from session '''
         del self.session[CART_SESSION_ID]
         self.session.modified = True
+
+    def recalculate(self):
+        ''' Update values of cart's total products and cart's total price. '''
+        self.total_price = self.get_total_price()
+        self.total_products = self.__len__()
+        self.save()
+
+    def add_product(self, product, quantity=1):
+        product_id = str(product.id)
+        if product_id not in self.cart:
+            total_price = product.price * quantity
+            print(total_price)
+            self.cart[product_id] = {
+                'price': str(product.price),
+                'quantity': quantity,
+                'total_price': str(total_price),
+                'slug': product.slug
+            }
+        else:
+            self.cart[product_id]['quantity'] = quantity
+        self.recalculate()
+
+    def change_product_quantity(self, product, quantity):
+        product_id = str(product.id)
+        if product_id in self.cart:
+            self.cart[product_id]['quantity'] = quantity
+            self.recalculate()
+
+    def remove_product(self, product):
+        product_id = str(product.id)
+        if product_id in self.cart:
+            del self.cart[product_id]
+            self.recalculate()

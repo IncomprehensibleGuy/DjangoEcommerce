@@ -18,4 +18,6 @@ class CartMixin(View):
         #     if not cart:
         #         cart = Cart.objects.create(for_anonymous_user=True)
         self.cart = Cart(request)
+        self.total_price = self.cart.get_total_price()
+        self.total_products = self.cart.__len__()
         return super().dispatch(request, *args, **kwargs)
