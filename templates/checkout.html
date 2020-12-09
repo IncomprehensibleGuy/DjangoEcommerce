@@ -133,15 +133,16 @@
 
                 <div class="col-8 mb-4">
                     <div class="row cart-result">
-                        <span>Товары ({{ cart.total_products }})</span>
-                        <span>{{ cart.total_price }} ₽</span>
+                        <span>Товары ({{ total_products }})</span>
+                        <span>{{ total_price }} ₽</span>
                     </div>
                     <div class="row cart-result">
                         <span>Доставка</span>
                         <span>бесплатно</span>
                     </div>
                     <div class="row cart-result font-weight-bold">
-                        Итого: <span>{{ total_order_price }} ₽</span>
+                        Итого: <span>{{ total_price }} ₽</span>
+                        {# TODO: client site rendering total cart price + delivery #}
                     </div>
                 </div>
 
