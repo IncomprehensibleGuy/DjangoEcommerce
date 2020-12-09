@@ -5,10 +5,9 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 
 from .forms import CreateOrderForm
-from cart.mixins import CartMixin
 
 
-class CheckoutView(CartMixin, View):
+class CheckoutView(View):
 
     def get(self, request, *args, **kwargs):
         categories = Category.objects.all()
@@ -25,7 +24,7 @@ class CheckoutView(CartMixin, View):
         return render(request, 'checkout.html', context)
 
 
-class CreateOrderView(CartMixin, View):
+class CreateOrderView(View):
 
     def fill_order_info(self, order, form, customer):
         order.customer = customer

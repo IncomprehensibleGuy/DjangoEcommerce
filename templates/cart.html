@@ -3,7 +3,6 @@
 
 {% block content %}
 
-
     <div class="cart mb-4">
         {% include 'partials/messages.html' %}
 
@@ -17,9 +16,7 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item active" aria-current="page">
-        {#                        <a href="{% url 'cart' %}">#}
-                                    Корзина
-        {#                        </a>#}
+                                Корзина
                             </li>
                             <li class="breadcrumb-item">
                                 <a href="{% url 'checkout' %}">
@@ -61,17 +58,16 @@
                                     {{ product.price }} ₽
                                 </td>
                                 <td>
-                                    <form action="{% url 'change_quantity' slug=product.slug %}"
-                                          method="post">
+                                    <form action="{% url 'change_quantity' slug=product.slug %}" method="get">
                                         {% csrf_token %}
-                                        <input type="number" name="quantity" value="{{ product.quantity }}" min="1"
+                                        <input type="number" name="quantity" value="{{ object.quantity }}" min="1"
                                                class="form-control quantity-input">
                                         <br>
                                         <input type="submit" value="Изменить" class="btn btn-primary">
                                     </form>
                                 </td>
                                 <td>
-                                    {{ product.total_price }} ₽
+                                    {{ object.total_price }} ₽
                                     <div class="remove-icon">
                                         <a href="{% url 'delete_from_cart' slug=product.slug %}">
                                             <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-trash" fill="red" xmlns="http://www.w3.org/2000/svg">
@@ -88,11 +84,12 @@
                         <td>Итого:</td>
                         <td></td>
                         <td></td>
+                        <td></td>
                         <td>
-                            {{ cart.total_products }}
+                            {{ total_products }}
                         </td>
                         <td>
-                            {{ cart.total_price }} ₽
+                            {{ total_price }} ₽
                         </td>
                     </tr>
                 </tbody>

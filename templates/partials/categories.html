@@ -2,7 +2,7 @@
     <h1 class="my-4">Категории</h1>
     <div class="list-group">
         {% for category in categories %}
-            <a href="{{ category.url }}" class="list-group-item">
+            <a href="{{ category.get_absolute_url }}" class="list-group-item">
                 {{ category.title }}
             </a>
         {% endfor %}

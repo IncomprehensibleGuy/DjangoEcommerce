@@ -10,11 +10,11 @@ class Cart:
         if not cart:
             cart = self.session[CART_SESSION_ID] = {}
         self.cart = cart
+        self.total_products = 0
 
     def __iter__(self):
         ''' Перебор элементов в корзине и получение продуктов из базы данных. '''
         product_ids = self.cart.keys()
-        # получение объектов product и добавление их в корзину
         products = Product.objects.filter(id__in=product_ids)
         for product in products:
             self.cart[str(product.id)]['product'] = product
@@ -52,7 +52,6 @@ class Cart:
         product_id = str(product.id)
         if product_id not in self.cart:
             total_price = product.price * quantity
-            print(total_price)
             self.cart[product_id] = {
                 'price': str(product.price),
                 'quantity': quantity,
@@ -60,7 +59,7 @@ class Cart:
                 'slug': product.slug
             }
         else:
-            self.cart[product_id]['quantity'] = quantity
+            self.cart[product_id]['quantity'] += quantity
         self.recalculate()
 
     def change_product_quantity(self, product, quantity):

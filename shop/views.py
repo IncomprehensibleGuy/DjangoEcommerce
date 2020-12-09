@@ -2,11 +2,9 @@ from django.shortcuts import render
 from django.views.generic import View, DetailView
 
 from .models import Category, Product
-from cart.mixins import CartMixin
 
 
-
-class CatalogView(CartMixin, View):
+class CatalogView(View):
 
     def get(self, request, *args, **kwargs):
         categories = Category.objects.all()
@@ -14,12 +12,11 @@ class CatalogView(CartMixin, View):
         context = {
             'categories': categories,
             'products': products,
-            'cart': self.cart,
         }
         return render(request, 'catalog.html', context)
 
 
-class CategoryView(CartMixin, DetailView):
+class CategoryView(DetailView):
 
     model = Category
     queryset = Category.objects.all()
@@ -29,11 +26,11 @@ class CategoryView(CartMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['cart'] = self.cart
+        context['category_products'] = self.get_object().product_set.all()
         return context
 
 
-class ProductView(CartMixin, DetailView):
+class ProductView(DetailView):
 
     context_object_name = 'product'
     template_name = 'product.html'
@@ -41,5 +38,4 @@ class ProductView(CartMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['cart'] = self.cart
         return context
