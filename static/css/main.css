@@ -67,6 +67,10 @@ li {
     margin-top: 180px;
 }
 
+.product-detail__price {
+    vertical-align: -4px;
+}
+
 .add-to-cart-btn {
     width: calc(100% - 40px);
 }

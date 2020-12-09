@@ -3,7 +3,12 @@
 
 {% block content %}
     <div class="row">
-        {% include 'partials/categories.html' %}
+        <div class="col-lg-3">
+            <h1 class="my-4">
+                {{ category.title }}
+            </h1>
+            {% include 'partials/categories.html' %}
+        </div>
         <!-- /.col-lg-3 -->
 
         <div class="col-lg-9 my-4">
@@ -15,9 +20,7 @@
                         </a>
                     </li>
                     <li class="breadcrumb-item active">
-                        <a href="">
-                            {{ category.title }}
-                        </a>
+                        {{ category.title }}
                     </li>
                 </ol>
             </nav>
