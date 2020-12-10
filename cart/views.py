@@ -48,3 +48,11 @@ class ChangeQuantityView(View):
         cart.change_product_quantity(product, int(request.GET.get('quantity')))
         messages.add_message(request, messages.INFO, 'Количество {} изменено'.format(product.title))
         return HttpResponseRedirect('/cart/')
+
+class ClearCartView(View):
+
+    def get(self, request, *args, **kwargs):
+        cart = Cart(request)
+        cart.clear()
+        messages.add_message(request, messages.INFO, 'Корзина успешно удалена')
+        return HttpResponseRedirect('/cart/')

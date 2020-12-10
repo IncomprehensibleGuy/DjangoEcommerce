@@ -99,9 +99,11 @@
                     Перейти к оформлению
                 </button>
             </a>
-            <button class="btn btn-danger" onclick="{{ cart.clear }}">
-                Очистить
-            </button>
+            <a href="{% url 'clear_cart' %}">
+                <button class="btn btn-danger" form="clear" type="submit">
+                    Очистить
+                </button>
+            </a>
         {% endif %}
     </div>
 
