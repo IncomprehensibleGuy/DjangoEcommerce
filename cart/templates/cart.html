@@ -1,4 +1,4 @@
-{% extends 'partials/base.html' %}
+{% extends 'partials/../../templates/common/base.html' %}
 
 
 {% block content %}
@@ -44,7 +44,7 @@
                         {% with product=object.product %}
                             <tr>
                                 <th scope="row">
-                                    {{ product.id }}
+                                    {{ forloop.counter }}
                                 </th>
                                 <td>
                                     {{ product.title }}
@@ -99,6 +99,9 @@
                     Перейти к оформлению
                 </button>
             </a>
+            <button class="btn btn-danger" onclick="{{ cart.clear }}">
+                Очистить
+            </button>
         {% endif %}
     </div>
 

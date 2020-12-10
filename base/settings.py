@@ -64,7 +64,12 @@ ROOT_URLCONF = 'base.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [
+            BASE_DIR / 'templates',
+            BASE_DIR / 'shop/templates',
+            BASE_DIR / 'cart/templates',
+            BASE_DIR / 'orders/templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
