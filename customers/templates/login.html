@@ -1,0 +1,29 @@
+{% extends 'common/base.html' %}
+
+
+{% block content %}
+    <div class="login-wrapper">
+        <div class="login-block col-lg-3">
+            {% if form.errors %}
+                {% for error in form.errors %}
+                    {{ error }}
+                {% endfor %}
+            {% endif %}
+            <h3 class="login-h3 my-3">
+                Вход
+            </h3>
+            <form class="login-form needs-validation"  method="post">
+                {% csrf_token %}
+                <div class="mb-3 form-row">
+                    {{ form.email }}
+                </div>
+                <div class="mb-3 form-row">
+                    {{ form.password }}
+                </div>
+                <button class="btn btn-primary login-btn mb-1" type="submit">
+                    Войти
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

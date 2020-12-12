@@ -108,3 +108,31 @@ li {
 .payment-list {
     padding-inline-start: 0 !important;
 }
+
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.login-block {
+    margin-bottom: 10rem;
+    padding: 0 20px;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+}
+
+.login-h3 {
+    text-align: center;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-btn {
+    width: 8rem;
+    align-self: center;
+}
