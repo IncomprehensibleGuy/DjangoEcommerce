@@ -10,7 +10,7 @@
                 {% endfor %}
             {% endif %}
             <h3 class="auth-h3 my-3">
-                Вход
+                Регистрация
             </h3>
             <form class="auth-form needs-validation"  method="post">
                 {% csrf_token %}
@@ -18,15 +18,18 @@
                     {{ form.email }}
                 </div>
                 <div class="mb-3 form-row">
-                    {{ form.password }}
+                    {{ form.password1 }}
                 </div>
-                <button class="btn btn-primary login-btn mb-3" type="submit">
-                    Войти
+                <div class="mb-3 form-row">
+                    {{ form.password2 }}
+                </div>
+                <button class="btn btn-primary register-btn mb-1" type="submit">
+                    Зарегистрироваться
                 </button>
                 <span class="login-txt">
-                    Нет аккаунта
-                    <a href="{% url 'registration' %}">
-                        Зарегистрироваться
+                    Уже есть аккаунт?
+                    <a href="{% url 'login' %}">
+                        Войти
                     </a>
                 </span>
             </form>
