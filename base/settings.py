@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 
+from .private_data import email_user, email_password
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -139,15 +141,42 @@ STATICFILES_DIRS = [
     str(BASE_DIR / 'static')
 ]
 
+
 MEDIA_URL = '/_media/'
 MEDIA_ROOT = str(BASE_DIR / '_media')
 
+
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 
 TIME_INPUT_FORMATS = [
     '%H:%M',  # '14:30'
 ]
 
+
 # Cart
 
 CART_SESSION_ID = 'cart'
+
+
+# Email SMTP
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = email_user
+EMAIL_HOST_PASSWORD = email_password
+EMAIL_PORT = '587'
+
+
+# Redis, Celery
+
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = '6379'
+CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_BROKER_TRANSPORT_OPTIONS = {
+    'visibility_timeout': 3600
+}
+CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
