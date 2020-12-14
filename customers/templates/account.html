@@ -6,8 +6,15 @@
     <h1>
         Account page
     </h1>
-    <a class="btn btn-danger" href="{% url 'logout' %}">
-        Выйти
-    </a>
+
+    {% if request.user.is_authenticated and request.user.is_active %}
+        <a class="btn btn-danger" href="{% url 'logout' %}">
+            Выйти
+        </a>
+    {% else %}
+        <p>
+            Not authenticated or active
+        </p>
+    {% endif %}
 
 {% endblock %}

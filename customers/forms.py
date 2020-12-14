@@ -67,3 +67,29 @@ class RegistrationForm(forms.ModelForm):
     class Meta:
         model = Customer
         fields = ['email', 'password1', 'password2']
+
+
+class ConfirmEmailForm(forms.Form):
+
+    d1 = forms.IntegerField(min_value=1, max_value=9)
+    d2 = forms.IntegerField(min_value=1, max_value=9)
+    d3 = forms.IntegerField(min_value=1, max_value=9)
+    d4 = forms.IntegerField(min_value=1, max_value=9)
+    d5 = forms.IntegerField(min_value=1, max_value=9)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['d1'].widget.attrs['class'] = 'form-control'
+        self.fields['d1'].widget.attrs['min'] = '0'
+        self.fields['d2'].widget.attrs['class'] = 'form-control'
+        self.fields['d2'].widget.attrs['min'] = '0'
+        self.fields['d3'].widget.attrs['class'] = 'form-control'
+        self.fields['d3'].widget.attrs['min'] = '0'
+        self.fields['d4'].widget.attrs['class'] = 'form-control'
+        self.fields['d4'].widget.attrs['min'] = '0'
+        self.fields['d5'].widget.attrs['class'] = 'form-control'
+        self.fields['d5'].widget.attrs['min'] = '0'
+
+    class Meta:
+        model = Customer
+        fields = ['d1', 'd2', 'd3', 'd4', 'd5']

@@ -24,6 +24,7 @@ class Customer(AbstractUser):
     username = None
     phone = models.CharField(max_length=11, verbose_name="Номер телефона")
     email = models.EmailField(verbose_name='Электронная почта', unique=True)
+    activation_code = models.PositiveIntegerField(null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

@@ -1,0 +1,37 @@
+{% extends 'common/base.html' %}
+
+
+{% block content %}
+    <div class="confirm-email__wrapper">
+        <div class="dialog">
+            <button class="close">×</button>
+            <h3>
+                Please enter the 5-digit verification code we sent via Email:
+            </h3>
+
+            <form id="form" class="needs-validation"  method="post">
+                {% csrf_token %}
+                {{ form.d1 }}
+                {{ form.d2 }}
+                {{ form.d3 }}
+                {{ form.d4 }}
+                {{ form.d5 }}
+
+                <button class="btn btn-primary btn-embossed" type="submit">
+                    Verify
+                </button>
+            </form>
+
+            <div>
+                Didn't receive the code?<br/>
+                <a href="#">
+                    Send code again
+                </a><br/>
+                <a href="#">
+                    Change phone number
+                </a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
